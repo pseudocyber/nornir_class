@@ -1,0 +1,7 @@
+# d. The groups.yaml file should contain the group 'ios' and this group should have the following attributes: platform, username, password, and port.
+---
+ios:
+    Platform: cisco_ios
+    Username: pyclass
+    Password: cisco123
+    Port: 22

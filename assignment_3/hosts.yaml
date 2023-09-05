@@ -1,0 +1,20 @@
+---
+# 2. Create the following inventory in the hosts.yaml and the groups.yaml files:
+#     a. The hosts.yaml file should have two hosts.
+#     b. Each 'host' in the hosts.yaml file should have a hostname.
+#     c. Each 'host' in the hosts.yaml file should belong to the group 'ios'.
+#     d. The groups.yaml file should contain the group 'ios' and this group should have the following attributes: platform, username, password, and port.
+#     e. Create a Python script that uses InitNornir to create a Nornir object using the newly created hosts.yaml and groups.yaml files. 
+#           Using a for-loop loop over the Nornir hosts in inventory and print out the following attributes for each host: hostname, groups, 
+#           platform, username, password, and port. Do this directly from the Nornir host objects (i.e. rely on Nornir's ability to search 
+#           from the host object then to group object).
+
+cisco3:
+  hostname: cisco3.lasthop.io
+  groups:
+    - ios
+    
+cisco4:
+  hostname: cisco4.lasthop.io
+  groups:
+    - ios
