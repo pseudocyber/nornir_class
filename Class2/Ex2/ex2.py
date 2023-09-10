@@ -130,6 +130,12 @@ def show_hostname(nr, filt):
     print(f"failed: {task_result.failed}")
     print()
     print(f"The field that actually contains the output from the network device is:\ntaks_result.result, which is:{task_result.result}\n")
+    
+    # 2e. Looking back at exercises 2a - 2d: explain what Nornir result types are "my_results", "host_results", 
+    # and "task_result"? What purpose does each of those three data types serve (i.e. why do we have them)?
+    print("'my_result' returns a dict like object with multiple results")
+    print("'host_results' is a list like object from one single host.  It is iterable, but may only have one item in the list.")
+    print("'task_result' is the result of the single task, on the single host.")
 
     # pdbr.set_trace()
 
