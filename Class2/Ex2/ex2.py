@@ -97,8 +97,25 @@ def show_hostname(nr, filt):
     print(f"my_result values:\n{my_result.values()}\n")
     
     # to get the actual output from the device, for cisco3:
-    print(f"output: {my_result['cisco3'][0].result}")
+    # print(f"output: {my_result['cisco3'][0].result}")
     # output: 'hostname cisco3\n path flash:cisco3-cfg'
+    
+    # 2c. Assign the results from "cisco3" to a new variable named "host_results". Inspect this new MultiResult 
+    # object: access the zeroith element from this MultiResult object. Finally, determine if "host_results" is an iterable or not.
+    host_results = my_result["cisco3"]
+    # Inspecting var: {host_results} - #TODO Remove these two lines
+    print(f"VARIABLE is type ==> {type(host_results)} \n {host_results}")
+    print()
+    
+    # check if host_results is iterable
+    try:
+        iter(host_results)
+        print(f"{host_results=} len {len(host_results)}")
+        print(f"host_results[0] = {host_results[0]}")
+        print(f"Type of data stored in host_results[0] is: {type(host_results[0])}")
+        print(f"{host_results=}\nIS iterable.")
+    except Exception as e:
+        print(e)
 
     # pdbr.set_trace()
 
