@@ -260,9 +260,34 @@ def get_napalm_arp(nr):
         
     
     # pdbr.set_trace()
+
+def print_out(data:list):
+    """Print function - looks to see if incoming data is in a list, and each item in the list is a dictionary
+
+    Args:
+        data (list): a list of dictionaries
+    """
+    if isinstance(data, list):
+        for line in data:
+            if isinstance(line, dict):
+                for key in line.keys():
+                    print(f"Host: {key}")
+                    print(line[key])
+                    print()
+            else:
+                print(f"Not a dict, printing whatever: {type(data)}")
+        
+    else:
+        print(f"data is not a list.  it's: {type(data)}")
     
+        
 def get_ip_brief(nr):
-    
+    """This function filters the host file for cisco and arista routers.
+    Then it will use netmiko to issue "show ip int brief" on each router.
+
+    Args:
+        nr (nornir object): a nornir object.
+    """
     # set up filters
     ios_filt = F(groups__contains="ios")
     eos_filt = F(groups__contains="eos")
@@ -270,9 +295,76 @@ def get_ip_brief(nr):
     
     # send command to netmiko
     command = "show ip int brief"
-    nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
+    try:
+        nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
+    except paramiko.ssh_exception.NoValidConnectionsError as e:
+        print(e)
     
-    pdbr.set_trace()
+    ip_int_brief = []
+    for device in nm_result.keys():
+        ip_ints = (nm_result[device].result)
+        temp_dict = {device:ip_ints}
+        ip_int_brief.append(temp_dict)
+    
+    print_out(ip_int_brief)
+    
+    """
+    Output:
+    
+    cisco3
+    Interface              IP-Address      OK? Method Status                Protocol
+    GigabitEthernet0/0/0   10.220.88.22    YES NVRAM  up                    up      
+    GigabitEthernet0/0/1   unassigned      YES unset  administratively down down    
+    GigabitEthernet0/1/0   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/1   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/2   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/3   unassigned      YES unset  down                  down    
+    Vlan1                  unassigned      YES manual up                    down    
+
+    cisco4
+    Interface              IP-Address      OK? Method Status                Protocol
+    GigabitEthernet0/0/0   10.220.88.23    YES NVRAM  up                    up      
+    GigabitEthernet0/0/1   unassigned      YES unset  administratively down down    
+    GigabitEthernet0/1/0   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/1   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/2   unassigned      YES unset  down                  down    
+    GigabitEthernet0/1/3   unassigned      YES unset  down                  down    
+    Vlan1                  unassigned      YES unset  up                    down    
+
+    arista1
+                                                                                    Address
+    Interface         IP Address            Status           Protocol           MTU    Owner  
+    ----------------- --------------------- ---------------- -------------- ---------- -------
+    Management1       unassigned            admin down       down              1500           
+    Vlan1             10.220.88.28/24       up               up                1500           
+
+
+    arista2
+                                                                                    Address
+    Interface         IP Address            Status           Protocol           MTU    Owner  
+    ----------------- --------------------- ---------------- -------------- ---------- -------
+    Management1       unassigned            admin down       down              1500           
+    Vlan1             10.220.88.29/24       up               up                1500           
+
+
+    arista3
+                                                                                    Address
+    Interface         IP Address            Status           Protocol           MTU    Owner  
+    ----------------- --------------------- ---------------- -------------- ---------- -------
+    Management1       unassigned            admin down       down              1500           
+    Vlan1             10.220.88.30/24       up               up                1500           
+
+
+    arista4
+                                                                                    Address
+    Interface         IP Address            Status           Protocol           MTU    Owner  
+    ----------------- --------------------- ---------------- -------------- ---------- -------
+    Management1       unassigned            admin down       down              1500           
+    Vlan1             10.220.88.31/24       up               up                1500           
+
+
+    """
+        
 
 def main():
     '''Main Function'''
