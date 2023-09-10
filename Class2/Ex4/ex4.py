@@ -238,13 +238,28 @@ def get_napalm_arp(nr):
     devices = list(results.keys())
     output = []
     for device in devices:
-        print(f"{device=}")
         device_dict = results[device].result
-        print(device_dict)
-        input('pause')
+        arp_table = device_dict['get_arp_table']
+        for line in arp_table:
+            if line['ip'] == '10.220.88.1':
+                output_line = f'Host: {device}: {line}'
+                output.append(output_line)
+    for line in output:
+        print(line)
+        
+    """
+    Output:
+    
+    Host: cisco3: {'interface': 'GigabitEthernet0/0/0', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 31.0}
+    Host: cisco4: {'interface': 'GigabitEthernet0/0/0', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 31.0}
+    Host: arista1: {'interface': 'Vlan1, Ethernet1', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista2: {'interface': 'Vlan1, Ethernet1', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista3: {'interface': 'Vlan1, Ethernet1', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista4: {'interface': 'Vlan1, Ethernet1', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 0.0}
+    """
         
     
-    pdbr.set_trace()
+    # pdbr.set_trace()
 
 def main():
     '''Main Function'''
