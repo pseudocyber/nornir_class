@@ -116,6 +116,20 @@ def show_hostname(nr, filt):
         print(f"{host_results=}\nIS iterable.")
     except Exception as e:
         print(e)
+    
+    # 2d. Assign the zeroith element of the host_results object to a new variable named "task_result". 
+    # What type of object is task_result? 
+    # Print out the 'host', 'name', 'result', and 'failed' attributes from task_result. 
+    # Which field actually contains the output from the network device?
+    print(f"\nEx. 2d\n")
+    task_result = host_results[0]
+    print(f"type: {type(task_result)}")
+    print(f"host: {task_result.host}")
+    print(f"name: {task_result.name}")
+    print(f"result: {task_result.result}")
+    print(f"failed: {task_result.failed}")
+    print()
+    print(f"The field that actually contains the output from the network device is:\ntaks_result.result, which is:{task_result.result}\n")
 
     # pdbr.set_trace()
 
