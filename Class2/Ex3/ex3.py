@@ -7,6 +7,7 @@ from nornir.core.filter import F
 import pdbr
 import os
 from nornir_netmiko import netmiko_send_command  # used in ex. 2b.
+from nornir_napalm.plugins.tasks.napalm_get import napalm_get
 
 def init_nornir():
     """Initializes norir.  Returns a nornir object.
@@ -125,10 +126,13 @@ def show_arp(nr):
 
     """
     print(f"\nEntered func 'show_arp\n")
+    
+    # set up filters
     ios_filt = F(groups__contains="ios")
     eos_filt = F(groups__contains="eos")
     nr = nr.filter(ios_filt | eos_filt)
     
+    # send command to netmiko
     command = "show ip arp"
     nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
     
@@ -178,9 +182,45 @@ def show_arp(nr):
     Host: arista3, Gateway: 10.220.88.1       0:00:00  0024.c4e9.48ae  Vlan1, Ethernet1
     Host: arista4, Gateway: 10.220.88.1       0:00:00  0024.c4e9.48ae  Vlan1, Ethernet1
     """
+    # set up filters
+    ios_filt = F(groups__contains="ios")
+    eos_filt = F(groups__contains="eos")
+    nr = nr.filter(ios_filt | eos_filt)
         
-    # pdbr.set_trace()
+    # send command to netmiko
+    # command = "show ip arp"
+    # nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
+    results = nr.run(
+        taks=napalm_get,
+        getters=["get_arp_table"]
+    )
     
+    pdbr.set_trace()
+
+def get_napalm_arp(nr):
+    """
+    4. Using a NAPALM getter instead of Netmiko, capture the ARP table output from all of the EOS and IOS devices. 
+    The NAPALM "arp_table" getter will return a list of dictionaries. In this list of dictionaries each inner-dictionary 
+    will correspond to one entry in the ARP table.
+
+    Post-process the data retrieved from this NAPALM getter and print out the "host" name 
+    (for example, "cisco3", "cisco4") and the NAPALM inner dictionary corresponding to the 
+    MAC address of the default gateway. For both exercise3 and exercise4, you can just hard-code the 
+    gateway value into your code. In other words, you do not need to dynamically determine the default gateway.
+
+    Your printed output should be similar to the following (note, the default gateway and MAC address in your lab environment might be different). 
+
+    Host: cisco3, Gateway: {'interface': 'GigabitEthernet0/0/0', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 5.0}
+    Host: cisco4, Gateway: {'interface': 'GigabitEthernet0/0/0', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 5.0}
+    Host: arista1, Gateway: {'interface': 'Vlan1, Ethernet1', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista2, Gateway: {'interface': 'Vlan1, Ethernet1', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista3, Gateway: {'interface': 'Vlan1, Ethernet1', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 0.0}
+    Host: arista4, Gateway: {'interface': 'Vlan1, Ethernet1', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 0.0}
+
+    """
+    
+    
+    pdbr.set_trace()
 
 def main():
     '''Main Function'''
@@ -189,6 +229,7 @@ def main():
     filt = filter_inventory(nr, "ios") # 2a
     show_hostname(nr, filt) # 2b
     show_arp(nr)  # 3
+    # get_napalm_arp(nr) # 4
     
     
 
