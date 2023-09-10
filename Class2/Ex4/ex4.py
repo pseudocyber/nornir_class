@@ -187,15 +187,7 @@ def show_arp(nr):
     eos_filt = F(groups__contains="eos")
     nr = nr.filter(ios_filt | eos_filt)
         
-    # send command to netmiko
-    # command = "show ip arp"
-    # nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
-    results = nr.run(
-        taks=napalm_get,
-        getters=["get_arp_table"]
-    )
-    
-    pdbr.set_trace()
+
 
 def get_napalm_arp(nr):
     """
@@ -218,18 +210,50 @@ def get_napalm_arp(nr):
     Host: arista4, Gateway: {'interface': 'Vlan1, Ethernet1', 'mac': '00:62:EC:29:70:FE', 'ip': '10.220.88.1', 'age': 0.0}
 
     """
+    # set up filters
+    ios_filt = F(groups__contains="ios")
+    eos_filt = F(groups__contains="eos")
+    nr = nr.filter(ios_filt | eos_filt)
+        
+
+    results = nr.run(
+        task=napalm_get,
+        getters=["get_arp_table"]
+    )
+   
+    """
+    (Pdbr) results.keys()
+    dict_keys(['cisco3', 'cisco4', 'arista1', 'arista2', 'arista3', 'arista4'])
+
+    (results['cisco3']) returns a list like object.
     
+    (Pdbr) results['cisco3'].result - is a dictionary, where the key is the command, and then the value is a list of dictionaries, like below.
+{
+    'get_arp_table': [
+        {'interface': 'GigabitEthernet0/0/0', 'mac': '00:24:C4:E9:48:AE', 'ip': '10.220.88.1', 'age': 0.0},
+        {'interface': 'GigabitEthernet0/0/0', 'mac': 'C8:9C:1D:EA:0E:B6', 'ip': '10.220.88.20', 'age': 183.0},
+        {'interface': 'GigabitEthernet0/0/0', 'mac': '1C:6A:7A:AF:57:6C', 'ip': '10.220.88.21', 'age': 21.0},
+    """
+    
+    devices = list(results.keys())
+    output = []
+    for device in devices:
+        print(f"{device=}")
+        device_dict = results[device].result
+        print(device_dict)
+        input('pause')
+        
     
     pdbr.set_trace()
 
 def main():
     '''Main Function'''
     nr = init_nornir()
-    check_workers(nr) # 1a
-    filt = filter_inventory(nr, "ios") # 2a
-    show_hostname(nr, filt) # 2b
-    show_arp(nr)  # 3
-    # get_napalm_arp(nr) # 4
+    # check_workers(nr) # 1a
+    # filt = filter_inventory(nr, "ios") # 2a
+    # show_hostname(nr, filt) # 2b
+    # show_arp(nr)  # 3
+    get_napalm_arp(nr) # 4
     
     
 
