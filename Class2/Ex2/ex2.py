@@ -31,6 +31,8 @@ Brannen Taylor - 20230910
 '''
 from nornir import InitNornir
 import pdbr
+import os
+from nornir_netmiko import netmiko_send_command  # used in ex. 2b.
 
 def init_nornir():
     """Initializes norir.  Returns a nornir object.
@@ -59,7 +61,7 @@ def filter_inventory(nr, group_name):
         nr (nornir_object): nornir object
         group_name (str): the group name you want to filter on.
 
-    Returns: no returns
+    Returns: filt (nornir.core.filter.F) - returns a nornir filter
     """
     
     # We will cover inventory filtering later in the course
@@ -67,19 +69,47 @@ def filter_inventory(nr, group_name):
     filt = F(groups__contains=group_name)
     nr = nr.filter(filt)
     
+        
     filter_results = nr.inventory.hosts
-    print(f"Inventory hosts with '{group_name}': {filter_results}")
+    print("From: func'filter_function:'")
+    print(f"Inventory hosts with '{group_name}': {filter_results}\n")
     
+    return filt
+    
+def show_hostname(nr, filt):
+    """2b. Create a Python script that uses netmiko_send_command to execute "show run | inc hostname" 
+    on all the "ios" devices in your inventory (once again use the filter that you created in exercise 2a). 
+    Assign the result of this task to a variable named "my_results".
 
+    Print the "type" of the my_results object. Additionally, inspect the my_results object using its 
+    "keys()", "items()" and "values" methods.
+
+    """
+    print("From: func show_hostname")
+    nr = nr.filter(filt)
+    # filter_results = nr.inventory.hosts
+    command = f'show run | inc cisco3'
+    my_result = nr.run(task=netmiko_send_command, command_string=command)
+    
+    print(f"type(my_result): {type(my_result)}\n")
+    print(f"my_result keys:\n{my_result.keys()}\n")
+    print(f"my_result items:\n{my_result.items()}\n")
+    print(f"my_result values:\n{my_result.values()}\n")
+    
+    # to get the actual output from the device, for cisco3:
+    print(f"output: {my_result['cisco3'][0].result}")
+    # output: 'hostname cisco3\n path flash:cisco3-cfg'
+
+    # pdbr.set_trace()
 
 def main():
     '''Main Function'''
     nr = init_nornir()
     check_workers(nr) # 1a
-    filter_inventory(nr, "ios") # 2a
+    filt = filter_inventory(nr, "ios") # 2a
+    show_hostname(nr, filt) # 2b
     
     
-    # pdbr.set_trace()
 
 
 if __name__ == '__main__':
