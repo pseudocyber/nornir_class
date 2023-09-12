@@ -9,6 +9,9 @@ import os
 from nornir_netmiko import netmiko_send_command  # used in ex. 2b.
 from nornir_napalm.plugins.tasks.napalm_get import napalm_get
 
+def pause():
+    input("pausing")
+    
 def init_nornir():
     """Initializes norir.  Returns a nornir object.
 
@@ -288,6 +291,8 @@ def get_ip_brief(nr):
     Args:
         nr (nornir object): a nornir object.
     """
+    print("Entered get_ip_brief")
+    
     # set up filters
     ios_filt = F(groups__contains="ios")
     eos_filt = F(groups__contains="eos")
@@ -297,8 +302,27 @@ def get_ip_brief(nr):
     command = "show ip int brief"
     try:
         nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
-    except paramiko.ssh_exception.NoValidConnectionsError as e:
+        print("Ran the netmiko_send_command")
+        
+        print(nm_result.keys())
+        
+        
+        pause()
+        
+        # if the nornir object has some failed hosts, output the failed hosts.
+        if nr.data.failed_hosts:
+            print(f"Nornir object (nr.data.failed_hosts): {nr.data.failed_hosts}")
+
+        
+    except Exception as e:
         print(e)
+        input('Error, pausing.')
+        
+        
+    # Exercise 5a
+    # 5a. Create a Nornir script that uses the netmiko_send_command task-plugin to execute "show ip int brief" 
+    # on each of the devices in the "ios" group. Use the inventory filtering pattern that we used in earlier 
+    # exercises. Print the output from this task using the print_results function.
     
     ip_int_brief = []
     for device in nm_result.keys():
@@ -364,7 +388,25 @@ def get_ip_brief(nr):
 
 
     """
-        
+def change_password(nr, password=str):
+    """5b. Expanding on exercise 5a, set the 'cisco3' password attribute to an invalid value. The code to do this would be similar to the following: 
+    nr.inventory.hosts["cisco3"].password = 'bogus'
+    
+    username pyclass privilege 15 secret bogus
+    
+    Re-run your Nornir task and print out the "failed_hosts" using both the results object (results.failed_hosts) and the Nornir object (nr.data.failed_hosts)
+    Args:
+        nr (nornir object): nornir object
+        password (str, optional): the password you want to use. Defaults to str.
+    """
+    print("Changing password")
+    # command = f"username pyclass privilege 15 secret {password}"
+    try:
+        nr.inventory.hosts["cisco3"].password = password
+        print("Password changed.")
+    except Exception as e:
+        print(e)
+    
 
 def main():
     '''Main Function'''
@@ -374,7 +416,11 @@ def main():
     # show_hostname(nr, filt) # 2b
     # show_arp(nr)  # 3
     # get_napalm_arp(nr) # 4
-    get_ip_brief(nr) # 5
+    # get_ip_brief(nr) # 5a
+    
+    change_password(nr, "bogus") # 5b.
+    
+    get_ip_brief(nr) #5b part 2.
     
     
 
