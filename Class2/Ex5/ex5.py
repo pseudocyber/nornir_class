@@ -304,7 +304,12 @@ def get_ip_brief(nr):
         nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
         print("Ran the netmiko_send_command")
         
-        print(nm_result.keys())
+        print(nm_result.keys()) # this is an aggresult object, dict like obj.
+        for key in nm_result.keys():
+            if nm_result[key].failed:
+                my_obj = nm_result[key]
+                print(f"Command failed on {key}")
+                pdbr.set()
         
         
         pause()
