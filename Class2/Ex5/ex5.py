@@ -306,6 +306,7 @@ def get_ip_brief(nr):
         
         # 5b
         # print(nm_result.keys()) # this is an aggresult object, dict like obj.
+        
         for key in nm_result.keys():
             if nm_result[key].failed:  # this is looking at a multi-result object, failed attrib. List like
                 # look at the list of the nm_result[key] to see the list of items in it.  The items
@@ -316,7 +317,10 @@ def get_ip_brief(nr):
         # if the nornir object has some failed hosts, output the failed hosts.
         if nr.data.failed_hosts:
             print(f"Nornir object (nr.data.failed_hosts): {nr.data.failed_hosts}")
+            failed_hosts = nr.data.failed_hosts    
 
+            ios_filt = F(groups__contains="ios")
+            nr = nr.filter(ios_filt)
        
 
 
