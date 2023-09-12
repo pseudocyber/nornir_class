@@ -415,6 +415,26 @@ def change_password(nr, password=str):
         print("Password changed.")
     except Exception as e:
         print(e)
+        
+    def do_5c(nr, failed_hosts=set):
+        """
+        5c. Expand upon the Python program in exercise5b, this time add an additional task that runs *only* on the failed hosts.
+
+        In other words, the sequence of actions should be:
+
+        i. Filter your hosts to only be the "ios" hosts.
+
+        ii. Set the "password" for "cisco3" to be an invalid password.
+
+        iii. Execute "show ip int brief" on all of the "ios" hosts ("cisco3" will fail due to the invalid password).
+
+        iv. Set the "cisco3" password back to its correct value using os.environ["NORNIR_PASSWORD"] (this environment variable will be set in the lab environment).
+
+        v. Execute "show ip int brief" again, but this time execute the task only on the "failed_hosts" (i.e. cisco3). This will require that you set the "on_good" and "on_failed" arguments that are used in the Nornir .run() method.
+
+        """
+        print(f"Doing 5c.  Got {type(failed_hosts)} which is:\n{failed_hosts}")
+        pass
     
 
 def main():
@@ -430,7 +450,8 @@ def main():
     change_password(nr, "bogus") # 5b.
     
     failed_hosts = get_ip_brief(nr) #5b part 2.
-    print(f"failed hosts: {failed_hosts}")
+    # print(f"failed hosts: {failed_hosts}")
+    do_5c(nr, failed_hosts)
     
     
 
