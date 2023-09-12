@@ -304,20 +304,21 @@ def get_ip_brief(nr):
         nm_result = nr.run(task=netmiko_send_command, command_string=command)  # netmiko result
         print("Ran the netmiko_send_command")
         
-        pdbr.set_trace()
+        # 5b
         # print(nm_result.keys()) # this is an aggresult object, dict like obj.
         for key in nm_result.keys():
             if nm_result[key].failed:  # this is looking at a multi-result object, failed attrib. List like
                 # look at the list of the nm_result[key] to see the list of items in it.  The items
                 # will have attribs.
+                print("results object (results.failed_hosts):")
                 print(f"The netmiko command failed on: {nm_result[key].host}")  # result object attrib
-        
-        
-        pause()
         
         # if the nornir object has some failed hosts, output the failed hosts.
         if nr.data.failed_hosts:
             print(f"Nornir object (nr.data.failed_hosts): {nr.data.failed_hosts}")
+
+       
+
 
         
     except Exception as e:
