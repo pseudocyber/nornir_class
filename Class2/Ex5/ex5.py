@@ -317,12 +317,8 @@ def get_ip_brief(nr):
         # if the nornir object has some failed hosts, output the failed hosts.
         if nr.data.failed_hosts:
             print(f"Nornir object (nr.data.failed_hosts): {nr.data.failed_hosts}")
-            failed_hosts = nr.data.failed_hosts    
-
-            ios_filt = F(groups__contains="ios")
-            nr = nr.filter(ios_filt)
-       
-
+            failed_hosts = nr.data.failed_hosts
+            
 
         
     except Exception as e:
@@ -342,6 +338,8 @@ def get_ip_brief(nr):
         ip_int_brief.append(temp_dict)
     
     print_out(ip_int_brief)
+    
+    return failed_hosts
     
     """
     Output:
@@ -431,7 +429,8 @@ def main():
     
     change_password(nr, "bogus") # 5b.
     
-    get_ip_brief(nr) #5b part 2.
+    failed_hosts = get_ip_brief(nr) #5b part 2.
+    print(f"failed hosts: {failed_hosts}")
     
     
 
