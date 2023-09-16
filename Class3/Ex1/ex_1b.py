@@ -59,6 +59,7 @@ def get_timezones(nr):
     # For each host, get the items for it.
     for host in nr.inventory.hosts:
         # convert the items dict_keys object to a dictionary
+        ipdb.set_trace()
         data = dict(nr.inventory.hosts[host].items())
         timezones.append(data.get('timezone', 'Not set'))
 
