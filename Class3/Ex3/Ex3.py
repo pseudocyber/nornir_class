@@ -154,8 +154,8 @@ def get_role(nr, role:str):
     return data
 
 def get_role_and_wifi_pw(nr, role:str, wifi_pw:str):
-    """Filtering hosts by role.
-    3a.
+    """Filtering hosts by role and wifi password.
+    3c.
     
     Args:
         nr (nornir object): nornir object
@@ -167,7 +167,7 @@ def get_role_and_wifi_pw(nr, role:str, wifi_pw:str):
     if isinstance(role, str) and isinstance(wifi_pw, str):
         # ipdb.set_trace()
 
-        data = nr.filter(F(role__contains=role) & F(site_details__wifi_password__contains=wifi_pw))  # 3c
+        data = nr.filter(F(role__contains=role) & ~F(site_details__wifi_password__contains=wifi_pw))  # 3c & 3d - ~ negates the 2nd criteria.
         logging.info(f"Returning: {data}")
         return data
 
