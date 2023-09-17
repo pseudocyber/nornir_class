@@ -1,0 +1,14 @@
+---
+# nornir configuration - setting the number of workers to 5
+
+# 1b. Create a Nornir config.yaml file that sets the number of workers to 5. 
+# Modify the Python script from exercise 1a to load this config.yaml file. 
+# Print out and verify the new number of workers.
+# inventory:
+#   plugin: SimpleInventory
+#   options:
+#     host_file: inventory.yaml
+runner:
+  plugin: threaded
+  options:
+    num_workers: 20
