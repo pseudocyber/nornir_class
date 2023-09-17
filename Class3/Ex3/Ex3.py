@@ -108,9 +108,9 @@ def output(msg, hosts):
         print(f"Host: {host}")
     print()
     
-def get_group(nr, *groups:list):
+def get_group(nr, *groups:tuple):
     """Filtering hosts for group membership.
-
+    3b
     Args:
         nr (nornir object): nornir object
         groups (tuple): Group names to filter on
@@ -122,7 +122,11 @@ def get_group(nr, *groups:list):
     # or (union) the "sfo" group. Print the hosts that are contained in this new Nornir object.
     
     groups = groups[0] # the groups param is a tuple, with len 1.  Inside the groups param, there should be 2 items.
-        
+    # ipdb.set_trace()
+    if len(groups) == 1:
+        # Passing in 2 groups to filter - membership in group 1(index 0) OR group 2(index 1)
+        # F(groups__contains=groups'sea')
+        data = nr.filter(F(groups__contains=groups[0]))
     if len(groups) == 2:
         # Passing in 2 groups to filter - membership in group 1(index 0) OR group 2(index 1)
         # F(groups__contains=groups'sea') | F(groups__contains=groups'sfo')
@@ -149,7 +153,23 @@ def get_role(nr, role:str):
     logging.info(f"Returning: {data}")
     return data
 
+def get_role_and_wifi_pw(nr, role:str, wifi_pw:str):
+    """Filtering hosts by role.
+    3a.
+    
+    Args:
+        nr (nornir object): nornir object
+        role (str): Role name to filter on
 
+    Returns:
+        nornir object: filtered nornir object
+    """
+    if isinstance(role, str) and isinstance(wifi_pw, str):
+        # ipdb.set_trace()
+
+        data = nr.filter(F(role__contains=role) & F(site_details__wifi_password__contains=wifi_pw))  # 3c
+        logging.info(f"Returning: {data}")
+        return data
 
 def main():
     '''Main Function'''
@@ -162,10 +182,11 @@ def main():
     # ##############################################
     # # Set variables below to None not to use them.
     host = None #'arista1' 
-    role = 'AGG'  # AGG 3a
+    role = 'WAN'  # AGG 3a
     port = None # 22 
     # group = None# 'sfo' 
-    group = ('sea', 'sfo')# 'sfo' 
+    group = None #('sfo', 'sea')# 'sfo'
+    wifi_pw = 'racecar' #something 3c 
     
     if group:  # filter the hosts based on a group. 2c.
         nr = get_group(nr, group)  # filter the nr object with "F"ilter.
@@ -173,12 +194,15 @@ def main():
     elif role and port and not group:
         nr = filter_role_and_port(nr, role, port)
         msg = f"Hosts with role {role} and port {port}"
-    elif role and not group and not port:
+    elif role and not group and not port and not wifi_pw:
         nr = get_role(nr, role)
         msg = f"Hosts with role: {role}"  # filter the nr object with "F"ilter.
     elif host and not role and not port and not group:
         nr = filter_single_host(nr, host)
         msg = f"Host {host}"
+    elif role and wifi_pw:
+        nr = get_role_and_wifi_pw(nr, role, wifi_pw)
+        msg = f"Role: {role}, Wifi: {wifi_pw}"
     
     output(msg, get_hosts(nr))  # moved get_hosts(nr) into the output call, without using a variable hosts=
 
