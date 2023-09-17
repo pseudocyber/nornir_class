@@ -11,6 +11,7 @@ eos:
 sea:
   data:
     state: WA
+    timezone: PST # 1b modify sea group to add timezone: pst.
 
 sfo:
   data:
