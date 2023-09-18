@@ -45,7 +45,8 @@ def main():
     filter_ = 'eos'  # 4b select only the "eos" group.
     nr = apply_filter(nr, filter_)
     
-    command = "show ip int brief"
+    command = "show interface status"
+    # command = "show ip int brief"
     agg_result = netmiko_send(nr, command)
     
     # 4c. From the results in exercise4b, process the interface table for all of the devices 
@@ -63,9 +64,9 @@ def main():
         # build the inner dictionary
         inner={}
         for int in inner_ints:
-            interface = int['interface']
-            if "Vlan" in interface or "vlan" in interface:  # check to see if the interface is a "vlan interface"
-                vlan = interface[-1]  # extract the vlan number from the end of the interface (assuming its a single digit)
+            interface = int['port']
+            # if "Vlan" in interface or "vlan" in interface:  # check to see if the interface is a "vlan interface"
+            vlan = int["vlan_id"]  # extract the vlan number from the end of the interface (assuming its a single digit)
             status = int['status']
             last = {}  # This last internal dictionary should have keys of "status" and "vlan". 
             last['status'] = status
