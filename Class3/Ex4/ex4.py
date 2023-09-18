@@ -54,17 +54,31 @@ def main():
     # The inner dictionary should have the interface names as keys and point to another 
     # internal dictionary. This last internal dictionary should have keys of "status" and "vlan". 
     
+    # create a combined dictionary
     combined = {}
-    for item in agg_result.items():
-        # ipdb.set_trace()
-        inner_ints = item[1].result
+    # agg_result.items is all of the aggregated results from netmiko commands - one agg result per device.
+    for device in agg_result.items():
+        switch_name = device[0] # Getting the name of the switch to use as a key.
+        inner_ints = device[1].result  # Getting the inner interfaces to use as a value of switch_name.
+        # build the inner dictionary
+        inner={}
+        for int in inner_ints:
+            interface = int['interface']
+            if "Vlan" in interface or "vlan" in interface:  # check to see if the interface is a "vlan interface"
+                vlan = interface[-1]  # extract the vlan number from the end of the interface (assuming its a single digit)
+            status = int['status']
+            last = {}  # This last internal dictionary should have keys of "status" and "vlan". 
+            last['status'] = status
+            last['vlan'] = vlan
+            inner[interface] = last
+        combined[switch_name] = inner  # The switch name keys should point to an inner dictionary.
+    print()
+    msg = "Printing device, Interface, Status, and VLAN ID"
+    print(f"{msg}\n{'-'*(len(msg)+7)}")
+    pprint(combined)
+    print()
 
-        combined[item[0]] = inner_ints
-        ipdb.set_trace()
-        
-        
-
-    
+            
 
 if __name__ == '__main__':
     main()
