@@ -5,6 +5,8 @@ nornir aggregated results to run through a network to code (NTC) template, and p
 structured data.  Then, the code reads through the structured data to rebuild dictionaries into a table of 
 interesting data.
 
+Official answer to problem:  https://github.com/twin-bridges/nornir_course/tree/master/class3/exercises/exercise4
+
 Nornir class
 Exercise 4
 8/17 BT
