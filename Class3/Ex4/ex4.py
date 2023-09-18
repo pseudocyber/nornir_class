@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 '''Create a Python script that creates a new Nornir object from inventory using the above config.yaml file. 
+Exercise 4 uses netmiko send commands to do a "show interface status" on multiple switches, then uses the
+nornir aggregated results to run through a network to code (NTC) template, and parse the string data into
+structured data.  Then, the code reads through the structured data to rebuild dictionaries into a table of 
+interesting data.
+
 Nornir class
 Exercise 4
 8/17 BT
@@ -79,6 +84,45 @@ def main():
     pprint(combined)
     print()
 
+    """
+    OUTPUT
+    
+Printing device, Interface, Status, and VLAN ID
+------------------------------------------------------
+{'arista1': {'Et1': {'status': 'connected', 'vlan': '1'},
+             'Et2': {'status': 'connected', 'vlan': '2'},
+             'Et3': {'status': 'connected', 'vlan': '3'},
+             'Et4': {'status': 'connected', 'vlan': '4'},
+             'Et5': {'status': 'connected', 'vlan': '5'},
+             'Et6': {'status': 'connected', 'vlan': '6'},
+             'Et7': {'status': 'connected', 'vlan': '7'},
+             'Ma1': {'status': 'disabled', 'vlan': 'routed'}},
+ 'arista2': {'Et1': {'status': 'connected', 'vlan': '1'},
+             'Et2': {'status': 'connected', 'vlan': '2'},
+             'Et3': {'status': 'connected', 'vlan': '3'},
+             'Et4': {'status': 'connected', 'vlan': '4'},
+             'Et5': {'status': 'connected', 'vlan': '5'},
+             'Et6': {'status': 'connected', 'vlan': '6'},
+             'Et7': {'status': 'connected', 'vlan': '7'},
+             'Ma1': {'status': 'disabled', 'vlan': 'routed'}},
+ 'arista3': {'Et1': {'status': 'connected', 'vlan': '1'},
+             'Et2': {'status': 'connected', 'vlan': '2'},
+             'Et3': {'status': 'connected', 'vlan': '3'},
+             'Et4': {'status': 'connected', 'vlan': '4'},
+             'Et5': {'status': 'connected', 'vlan': '5'},
+             'Et6': {'status': 'connected', 'vlan': '6'},
+             'Et7': {'status': 'connected', 'vlan': '7'},
+             'Ma1': {'status': 'disabled', 'vlan': 'routed'}},
+ 'arista4': {'Et1': {'status': 'connected', 'vlan': '1'},
+             'Et2': {'status': 'connected', 'vlan': '2'},
+             'Et3': {'status': 'connected', 'vlan': '3'},
+             'Et4': {'status': 'connected', 'vlan': '4'},
+             'Et5': {'status': 'connected', 'vlan': '5'},
+             'Et6': {'status': 'connected', 'vlan': '6'},
+             'Et7': {'status': 'connected', 'vlan': '7'},
+             'Ma1': {'status': 'disabled', 'vlan': 'routed'}}}
+
+    """
             
 
 if __name__ == '__main__':
