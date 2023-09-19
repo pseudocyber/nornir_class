@@ -1,0 +1,13 @@
+# 4a. Create a "config.yaml" file that points to the hosts, groups and defaults inventory files in the ~/nornir_inventory directory. Your config.yaml file should be the following: 
+---
+inventory:
+  # plugin: nornir.plugins.inventory.simple.SimpleInventory
+  plugin: SimpleInventory
+  options:
+    host_file: "~/nornir_inventory/hosts.yaml"
+    group_file: "~/nornir_inventory/groups.yaml"
+    defaults_file: "~/nornir_inventory/defaults.yaml"
+  # runner:
+  #   plugin: threaded
+  #   options:
+  #     num_workers: 10
